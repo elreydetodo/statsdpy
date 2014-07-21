@@ -155,17 +155,17 @@ class StatsdServer(object):
             payload.append(("%s.%s%s" % (self.count_prefix, item,
                                          self.count_suffix),
                             (tstamp, self.counters[item])))
-            self.counters[item] = 0
+        self.counters = {}
 
         for key in self.timers:
             if len(self.timers[key]) > 0:
                 self.process_timer_key(key, tstamp, payload)
-                self.timers[key] = []
+        self.timers = {}
 
         for key in self.gauges:
             payload.append(("%s.%s" % (self.gauge_prefix, key),
                             (tstamp, self.gauges[key])))
-            self.gauges[key] = 0
+        self.gauges = {}
 
         if payload:
             batched_payload = []
@@ -194,17 +194,17 @@ class StatsdServer(object):
                                                 self.count_suffix,
                                                 self.counters[item],
                                                 tstamp))
-            self.counters[item] = 0
+        self.counters = {}
 
         for key in self.timers:
             if len(self.timers[key]) > 0:
                 self.process_timer_key(key, tstamp, payload)
-                self.timers[key] = []
+        self.timers = {}
 
         for key in self.gauges:
             payload.append("%s.%s %d %d\n" % (self.gauge_prefix, key,
                                               self.gauges[key], tstamp))
-            self.gauges[key] = 0
+        self.gauges = {}
 
         if self.debug:
             print payload
