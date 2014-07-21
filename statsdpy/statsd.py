@@ -242,11 +242,13 @@ class StatsdServer(object):
         try:
             if key not in self.timers:
                 self.timers[key] = []
-            self.timers[key].append(float(fields[0]))
-            if self.stats_seen >= maxint:
-                self.logger.info("hit maxint, reset seen counter")
-                self.stats_seen = 0
-            self.stats_seen += 1
+            times = fields[0].split("_")
+            for t in times:
+                self.timers[key].append(float(t))
+                if self.stats_seen >= maxint:
+                    self.logger.info("hit maxint, reset seen counter")
+                    self.stats_seen = 0
+                self.stats_seen += 1
         except Exception as err:
             self.logger.info("error decoding timer event: %s" % err)
             if self.debug:
